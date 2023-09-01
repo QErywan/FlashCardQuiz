@@ -37,11 +37,13 @@ class Flashcard:
         self.create_flashcard_label = tk.Label(self.create_flashcard_frame, text="Create Flashcard", font=("Arial", 20))
         self.create_flashcard_label.pack(pady=20)
         
-        
-        
+        self.flashcard_question_label = tk.Label(self.create_flashcard_frame, text="Question")
+        self.flashcard_question_label.pack(pady=10)
         self.flashcard_question_entry = tk.Entry(self.create_flashcard_frame)
         self.flashcard_question_entry.pack(pady=10)
         
+        self.flashcard_answer_label = tk.Label(self.create_flashcard_frame, text="Answer")
+        self.flashcard_answer_label.pack(pady=10)
         self.flashcard_answer_entry = tk.Entry(self.create_flashcard_frame)
         self.flashcard_answer_entry.pack(pady=10)
         
@@ -69,6 +71,12 @@ class Flashcard:
     ''' quiz section  '''  
     def quiz(self):
         self.main_menu_frame.destroy()
+        '''
+        quiz state
+        0 = stop
+        1 = start
+        '''
+        quiz_state = 1
         
         self.quiz_frame = tk.Frame(self.root)
         self.quiz_frame.pack(fill="both", expand=True)
@@ -76,6 +84,35 @@ class Flashcard:
         self.quiz_label = tk.Label(self.quiz_frame, text="Quiz", font=("Arial", 20))
         self.quiz_label.pack(pady=20)
         
+        while quiz_state == 1:
+            if self.questions:
+                for question, answer in self.questions.items():
+                    self.quiz_question_label = tk.Label(self.quiz_frame, text=question)
+                    self.quiz_question_label.pack(pady=10)
+                    
+                    self.quiz_answer_entry = tk.Entry(self.quiz_frame)
+                    self.quiz_answer_entry.pack(pady=10)
+                    
+                    self.quiz_answer_button = tk.Button(self.quiz_frame, text="Answer", command=self.quiz_answer)
+                    self.quiz_answer_button.pack(pady=10)
+                    
+                    self.quiz_next_button = tk.Button(self.quiz_frame, text="Next", command=self.quiz_next)
+                    self.quiz_next_button.pack(pady=10)
+                    
+                    self.quiz_stop_button = tk.Button(self.quiz_frame, text="Stop", command=self.quiz_stop)
+                    self.quiz_stop_button.pack(pady=10)
+                    
+                    self.quiz_back_button = tk.Button(self.quiz_frame, text="Back", command=self.quiz_back)
+                    self.quiz_back_button.pack(pady=10)
+                    
+                    
+            else:
+                self.quiz_label = tk.Label(self.quiz_frame, text="No questions found")
+                self.quiz_label.pack(pady=10)
+                
+                
+                quiz_state = 0
+                
         
         
         self.quiz_back_button = tk.Button(self.quiz_frame, text="Back", command=self.quiz_back)
