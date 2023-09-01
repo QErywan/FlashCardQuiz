@@ -1,11 +1,23 @@
 import tkinter as tk
+import json
 
+def save_questions(filename, questions):
+    with open(filename, "w") as f:
+        json.dump(questions, f)
+
+def load_questions(filename):
+    try:
+        with open(filename, "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.decoder.JSONDecodeError):
+        return {}
 
 class Flashcard:
     
     def __init__(self, root):
         
-        self.questions = {"1+1": "2", "2+2":"4"}
+        self.questions = load_questions("questions.json")
+        
         
         self.question_index = 0
         
@@ -62,6 +74,8 @@ class Flashcard:
         answer = self.flashcard_answer_entry.get()
         
         self.questions[question] = answer
+        
+        save_questions("questions.json", self.questions)
         
         self.create_flashcard_frame.destroy()
         self.create_flashcard()
