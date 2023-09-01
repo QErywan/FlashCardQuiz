@@ -5,7 +5,9 @@ class Flashcard:
     
     def __init__(self, root):
         
-        self.questions = {}
+        self.questions = {"1+1": "2", "2+2":"4"}
+        
+        self.question_index = 0
         
         self.root = root
         self.root.title("Flashcard")
@@ -15,6 +17,7 @@ class Flashcard:
         self.main_menu()
         
     def main_menu(self):
+        self.question_index = 0
         self.main_menu_frame = tk.Frame(self.root)
         self.main_menu_frame.pack(fill="both", expand=True)
         
@@ -60,7 +63,8 @@ class Flashcard:
         
         self.questions[question] = answer
         
-        print(self.questions)
+        self.create_flashcard_frame.destroy()
+        self.create_flashcard()
         
         
     def create_flashcard_back(self):
@@ -71,12 +75,6 @@ class Flashcard:
     ''' quiz section  '''  
     def quiz(self):
         self.main_menu_frame.destroy()
-        '''
-        quiz state
-        0 = stop
-        1 = start
-        '''
-        quiz_state = 1
         
         self.quiz_frame = tk.Frame(self.root)
         self.quiz_frame.pack(fill="both", expand=True)
@@ -84,39 +82,49 @@ class Flashcard:
         self.quiz_label = tk.Label(self.quiz_frame, text="Quiz", font=("Arial", 20))
         self.quiz_label.pack(pady=20)
         
-        while quiz_state == 1:
-            if self.questions:
-                for question, answer in self.questions.items():
-                    self.quiz_question_label = tk.Label(self.quiz_frame, text=question)
-                    self.quiz_question_label.pack(pady=10)
-                    
-                    self.quiz_answer_entry = tk.Entry(self.quiz_frame)
-                    self.quiz_answer_entry.pack(pady=10)
-                    
-                    self.quiz_answer_button = tk.Button(self.quiz_frame, text="Answer", command=self.quiz_answer)
-                    self.quiz_answer_button.pack(pady=10)
-                    
-                    self.quiz_next_button = tk.Button(self.quiz_frame, text="Next", command=self.quiz_next)
-                    self.quiz_next_button.pack(pady=10)
-                    
-                    self.quiz_stop_button = tk.Button(self.quiz_frame, text="Stop", command=self.quiz_stop)
-                    self.quiz_stop_button.pack(pady=10)
-                    
-                    self.quiz_back_button = tk.Button(self.quiz_frame, text="Back", command=self.quiz_back)
-                    self.quiz_back_button.pack(pady=10)
-                    
-                    
-            else:
-                self.quiz_label = tk.Label(self.quiz_frame, text="No questions found")
-                self.quiz_label.pack(pady=10)
-                
-                
-                quiz_state = 0
-                
+        if self.question_index < len(self.questions):
+            question = list(self.questions.keys())[self.question_index]
+            self.question_label = tk.Label(self.quiz_frame, text=question)
+            self.question_label.pack(pady=10)
+            
+            self.q_answer = self.questions[question]
+            
+            self.question_entry = tk.Entry(self.quiz_frame)
+            self.question_entry.pack(pady=10)
+            
+            self.answer_button = tk.Button(self.quiz_frame, text="Answer", command=self.show_answer)
+            self.answer_button.pack(pady=10)
+            
+            # self.answer_label = tk.Label(self.quiz_frame, text="self.questions[question]")
+            # self.answer_label.config(state=tk.DISABLED)
+            
+            self.question_index += 1
+            
+            self.next_button = tk.Button(self.quiz_frame, text="Next", command=self.quiz_next)
+            self.next_button.pack(pady=10)
+            self.next_button.config(state=tk.DISABLED)
+            
+        else:
+            self.question_label = tk.Label(self.quiz_frame, text="No more questions")
+            self.question_label.pack(pady=10)
+            
         
         
         self.quiz_back_button = tk.Button(self.quiz_frame, text="Back", command=self.quiz_back)
         self.quiz_back_button.pack(pady=10)
+        
+    def show_answer(self):
+        answer = "Answer: " + str(self.q_answer)
+        self.question_label.config(text=answer)
+        self.answer_button.config(state=tk.DISABLED)
+        self.next_button.config(state=tk.NORMAL)
+        
+    def quiz_next(self):
+        self.quiz_frame.destroy()
+        self.quiz()
+    
+    
+    
         
     def quiz_back(self):
         self.quiz_frame.destroy()
@@ -130,8 +138,6 @@ class Flashcard:
         
 
 
-        
-    
         
 if __name__ == "__main__":
     root = tk.Tk()
